@@ -32,9 +32,24 @@ docker network create --subnet=192.168.10.0/24 my-custom-network
 ```
 docker run -d --network my-custom-network --name bb1 busybox sh -c "while true;do sleep 3600; done"
 ```
-
+```
+docker run -d --name app2 -e APP_PORT=8081 -p 48081:8081 \
+jpalaparthi/rakutenapp1:v0.9
+```
 - save an image to tar file
 
 ```
 docker save -o <tarfile.tar> <imagename>
+```
+
+- To build docker images 
+
+```
+docker build . -f Dockerfile-scratch-nonroot -t jpalaparthi/rakutenapp1:v0.9
+```
+
+- To push Docker images
+
+```
+docker push jpalaparthi/rakutenapp1:v0.9
 ```
