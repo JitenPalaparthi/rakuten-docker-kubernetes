@@ -1,0 +1,19 @@
+FROM golang:1.22-alpine as build
+
+WORKDIR /app
+
+COPY . .
+
+# RUN go mod download
+
+RUN go build -ldflags="-s -w" -o app main.go
+
+FROM alpine:latest
+
+WORKDIR /root
+
+COPY --from=build /app/app .
+
+EXPOSE 8080
+
+CMD ["./app"]

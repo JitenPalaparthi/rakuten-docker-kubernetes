@@ -1,0 +1,29 @@
+FROM golang:1.22-alpine as build
+
+WORKDIR /app
+
+COPY . .
+
+# RUN go mod download
+
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o app main.go
+
+FROM alpine:latest
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /home/appuser
+
+COPY --from=build /app/app .
+
+RUN chown -R appuser:appgroup /home/appuser
+
+USER appuser
+
+env APP_PORT 8081
+
+EXPOSE ${APP_PORT}
+
+CMD ["./app"]
+
+# docker run -d --name app2 -e APP_PORT=8081 -p 48081:8081 \
