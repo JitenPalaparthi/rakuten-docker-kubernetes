@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-nginx-pod
+  labels:
+    name: nginx-pod
+    type: demo
+  namespace: test
+spec:
+  containers:
+  - name: example-nginx-container
+    imagePullPolicy: IfNotPresent
+    image: nginx:1.21
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+    # livenessProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 80
+    # readinessProbe:
+    #   initialDelaySeconds: 10
+    #   httpGet:
+    #     path: /ready
+    #     port: 80
+    ports:
+      - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-nginx-service
+  namespace: test
+spec:
+  selector:
+    name: nginx-pod
+    type: demo
+  ports:
+  - port: 8080
+    targetPort: 80
+    #nodePort: 30001 # nodeports will be in the rance of 30,000 to 32,000
+  # type: ClusterIP
+  # type: NodePort
+  type: LoadBalancer
+  # type: ExternalName
+  # externalName: example.com

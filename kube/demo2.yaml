@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-nginx-deployment
+  namespace: test
+  labels:
+    name: nginx-deployment
+    type: demo
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: example-nginx-pod
+  template:
+    metadata:
+      labels:
+        app: example-nginx-pod
+    spec:
+      containers:
+      - name: exampe-nginx-container
+        image: nginx:1.12
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "200m"
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-nginx-service
+  namespace: test
+spec:
+  selector:
+    name: nginx-deployment
+    type: demo
+  ports:
+  - port: 8080
+    targetPort: 80
+    #nodePort: 30001 # nodeports will be in the rance of 30,000 to 32,000
+  # type: ClusterIP
+  # type: NodePort
+  type: LoadBalancer
+  # type: ExternalName
+  # externalName: example.com
+
