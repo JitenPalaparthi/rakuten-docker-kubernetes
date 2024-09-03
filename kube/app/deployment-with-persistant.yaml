@@ -22,7 +22,17 @@ spec:
           name: http
         env:
         - name: PORT
-          value: "9090"
+          valueFrom:
+           configMapKeyRef:
+            name: upload-service-cm
+            key: PORT
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: password
+
+            
         volumeMounts:
         - name: upload-storage
           mountPath: /app/uploads

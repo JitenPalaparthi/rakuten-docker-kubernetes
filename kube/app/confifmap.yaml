@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: upload-service-cm
+data:
+  PORT: "9090"
+  APP_NAME: "upload-service"
